@@ -5,9 +5,9 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
-#define BALL_NUM 500
-#define BALL_RADIUS 15
-#define SUBSTEPS 10
+#define BALL_NUM 1000
+#define BALL_RADIUS 10
+#define SUBSTEPS 20
 
 int main(void) {
   SetConfigFlags(FLAG_MSAA_4X_HINT);
@@ -50,20 +50,20 @@ int main(void) {
           // Check walls collision for bouncing
           if (ballsPosition[i].x >= (GetScreenWidth() - BALL_RADIUS)) {
             ballsPosition[i].x = GetScreenWidth() - BALL_RADIUS;
-            ballsSpeed[i].x *= -0.5f;
+            ballsSpeed[i].x *= -0.0f;
           }
           if (ballsPosition[i].x <= BALL_RADIUS) {
             ballsPosition[i].x = BALL_RADIUS;
-            ballsSpeed[i].x *= -0.5f;
+            ballsSpeed[i].x *= -0.0f;
           }
 
           if (ballsPosition[i].y >= (GetScreenHeight() - BALL_RADIUS)) {
             ballsPosition[i].y = GetScreenHeight() - BALL_RADIUS;
-            ballsSpeed[i].y *= -0.5f;
+            ballsSpeed[i].y *= -0.0f;
           }
           if (ballsPosition[i].y <= BALL_RADIUS) {
             ballsPosition[i].y = BALL_RADIUS;
-            ballsSpeed[i].y *= -0.5f;
+            ballsSpeed[i].y *= -0.0f;
           }
 
           for (int j = i; j < BALL_NUM; j++) {
