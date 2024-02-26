@@ -1,39 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,cmake,linux,c++
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,cmake,linux,c++
-
-### C++ ###
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+# Created by https://www.toptal.com/developers/gitignore/api/cmake,macos
+# Edit at https://www.toptal.com/developers/gitignore?templates=cmake,macos
 
 ### CMake ###
 CMakeLists.txt.user
@@ -41,6 +7,7 @@ CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Testing
+Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
@@ -50,21 +17,6 @@ _deps
 ### CMake Patch ###
 # External projects
 *-prefix/
-
-### Linux ###
-*~
-
-# temporary files which can be created if a process still has a handle open of a deleted file
-.fuse_hidden*
-
-# KDE directory preferences
-.directory
-
-# Linux trash folder which might appear on any partition or disk
-.Trash-*
-
-# .nfs files are created when an open file is removed but is still being accessed
-.nfs*
 
 ### macOS ###
 # General
@@ -99,8 +51,4 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
-
-# ignore raylib headers source
-raylib.h
-raymath.h
-
+# End of https://www.toptal.com/developers/gitignore/api/cmake,macos
