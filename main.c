@@ -5,24 +5,24 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
-#define BALL_NUM 500
-#define BALL_RADIUS 10
-#define SUBSTEPS 60
+#define BALL_NUM 1000
+#define BALL_RADIUS 4
+#define SUBSTEPS 40
 
 int main(void) {
   SetConfigFlags(FLAG_MSAA_4X_HINT);
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib - particles collision");
 
-  Vector2 ballsSpeed[BALL_NUM];
-  Vector2 ballsPosition[BALL_NUM];
+  Vector2 ballsPos[BALL_NUM];
+  Vector2 ballsVel[BALL_NUM];
+  Vector2 ballsAcc[BALL_NUM] = {0.0f, 0.0f};
   Color ballsColor[BALL_NUM];
-  Vector2 accel = {0.0f, 500.0f};
+  Vector2 gravity = {0.0f, 500.0f};
 
   srand(time(NULL));
   for (int i = 0; i < BALL_NUM; i++) {
-    ballsSpeed[i] =
-        (Vector2){GetRandomValue(100, 200), GetRandomValue(100, 200)};
-    ballsPosition[i] =
+    ballsVel[i] = (Vector2){GetRandomValue(100, 200), GetRandomValue(10, 100)};
+    ballsPos[i] =
         (Vector2){GetRandomValue(BALL_RADIUS, SCREEN_WIDTH - BALL_RADIUS),
                   GetRandomValue(BALL_RADIUS, SCREEN_HEIGHT - BALL_RADIUS)};
     ballsColor[i] = ColorFromHSV(GetRandomValue(0, 360), 0.5f, 0.7f);
@@ -42,49 +42,53 @@ int main(void) {
 
       for (int step = 0; step < SUBSTEPS; step++) {
         for (int i = 0; i < BALL_NUM; i++) {
-          // ballsSpeed[i].x += accel.x * dt;
-          // ballsSpeed[i].y += accel.y * dt;
+          // Update position
+          ballsPos[i].x += ballsVel[i].x * dt + ballsAcc[i].x * dt * dt * 0.5f;
+          ballsPos[i].y += ballsVel[i].y * dt + ballsAcc[i].y * dt * dt * 0.5f;
 
-          ballsPosition[i].x += ballsSpeed[i].x * dt + accel.x * dt * dt * 0.5f;
-          ballsPosition[i].y += ballsSpeed[i].y * dt + accel.y * dt * dt * 0.5f;
+          // Update acceleration
+          ballsAcc[i].x = gravity.x;
+          ballsAcc[i].y = gravity.y;
+
+          // Update velocity
+          ballsVel[i].x += gravity.x * dt;
+          ballsVel[i].y += gravity.y * dt;
 
           // Check walls collision for bouncing
-          if (ballsPosition[i].x >= (GetScreenWidth() - BALL_RADIUS)) {
-            ballsPosition[i].x = GetScreenWidth() - BALL_RADIUS;
-            // ballsSpeed[i].x *= -0.0f;
+          if (ballsPos[i].x >= (GetScreenWidth() - BALL_RADIUS)) {
+            ballsPos[i].x = GetScreenWidth() - BALL_RADIUS;
+            ballsVel[i].x = 0.0f;
           }
-          if (ballsPosition[i].x <= BALL_RADIUS) {
-            ballsPosition[i].x = BALL_RADIUS;
-            // ballsSpeed[i].x *= -0.0f;
+          if (ballsPos[i].x <= BALL_RADIUS) {
+            ballsPos[i].x = BALL_RADIUS;
+            ballsVel[i].x = 0.0f;
           }
 
-          if (ballsPosition[i].y >= (GetScreenHeight() - BALL_RADIUS)) {
-            ballsPosition[i].y = GetScreenHeight() - BALL_RADIUS;
-            // ballsSpeed[i].y *= -0.0f;
+          if (ballsPos[i].y >= (GetScreenHeight() - BALL_RADIUS)) {
+            ballsPos[i].y = GetScreenHeight() - BALL_RADIUS;
+            ballsVel[i].y = 0.0f;
           }
-          if (ballsPosition[i].y <= BALL_RADIUS) {
-            ballsPosition[i].y = BALL_RADIUS;
-            // ballsSpeed[i].y *= -0.0f;
+          if (ballsPos[i].y <= BALL_RADIUS) {
+            ballsPos[i].y = BALL_RADIUS;
+            ballsVel[i].y = 0.0f;
           }
 
           for (int j = i; j < BALL_NUM; j++) {
-            if (i != j &&
-                CheckCollisionCircles(ballsPosition[i], BALL_RADIUS,
-                                      ballsPosition[j], BALL_RADIUS)) {
-              // Vector2 tmp = ballsSpeed[i];
-              // ballsSpeed[i] = ballsSpeed[j];
-              // ballsSpeed[j] = tmp;
+            if (i != j && CheckCollisionCircles(ballsPos[i], BALL_RADIUS,
+                                                ballsPos[j], BALL_RADIUS)) {
+              Vector2 tmp = ballsVel[i];
+              ballsVel[i] = ballsVel[j];
+              ballsVel[j] = tmp;
 
               // Separate the two intersecting circles
-              Vector2 normal = Vector2Normalize(
-                  Vector2Subtract(ballsPosition[j], ballsPosition[i]));
+              Vector2 normal =
+                  Vector2Normalize(Vector2Subtract(ballsPos[j], ballsPos[i]));
               float overlap =
-                  2 * BALL_RADIUS -
-                  Vector2Distance(ballsPosition[j], ballsPosition[i]);
+                  2 * BALL_RADIUS - Vector2Distance(ballsPos[j], ballsPos[i]);
               normal = Vector2Scale(normal, overlap / 2);
 
-              ballsPosition[i] = Vector2Subtract(ballsPosition[i], normal);
-              ballsPosition[j] = Vector2Add(ballsPosition[j], normal);
+              ballsPos[i] = Vector2Subtract(ballsPos[i], normal);
+              ballsPos[j] = Vector2Add(ballsPos[j], normal);
             }
           }
         }
@@ -97,7 +101,7 @@ int main(void) {
     ClearBackground(RAYWHITE);
 
     for (int i = 0; i < BALL_NUM; i++) {
-      DrawCircleV(ballsPosition[i], (float)BALL_RADIUS, ballsColor[i]);
+      DrawCircleV(ballsPos[i], (float)BALL_RADIUS, ballsColor[i]);
     }
 
     // On pause, draw a blinking message
