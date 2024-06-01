@@ -5,19 +5,19 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
-#define BALL_NUM 1000
-#define BALL_RADIUS 4
-#define SUBSTEPS 40
+#define BALL_NUM 90
+#define BALL_RADIUS 20
+#define SUBSTEPS 4
 
 int main(void) {
   SetConfigFlags(FLAG_MSAA_4X_HINT);
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib - particles collision");
 
+  Vector2 gravity = {0.0f, 500.0f};
   Vector2 ballsPos[BALL_NUM];
   Vector2 ballsVel[BALL_NUM];
-  Vector2 ballsAcc[BALL_NUM] = {0.0f, 0.0f};
+  Vector2 ballsAcc[BALL_NUM] = {gravity.x, gravity.y};
   Color ballsColor[BALL_NUM];
-  Vector2 gravity = {0.0f, 500.0f};
 
   srand(time(NULL));
   for (int i = 0; i < BALL_NUM; i++) {
@@ -45,10 +45,6 @@ int main(void) {
           // Update position
           ballsPos[i].x += ballsVel[i].x * dt + ballsAcc[i].x * dt * dt * 0.5f;
           ballsPos[i].y += ballsVel[i].y * dt + ballsAcc[i].y * dt * dt * 0.5f;
-
-          // Update acceleration
-          ballsAcc[i].x = gravity.x;
-          ballsAcc[i].y = gravity.y;
 
           // Update velocity
           ballsVel[i].x += gravity.x * dt;
@@ -84,8 +80,8 @@ int main(void) {
               Vector2 normal =
                   Vector2Normalize(Vector2Subtract(ballsPos[j], ballsPos[i]));
               float overlap =
-                  2 * BALL_RADIUS - Vector2Distance(ballsPos[j], ballsPos[i]);
-              normal = Vector2Scale(normal, overlap / 2);
+                  2.f * BALL_RADIUS - Vector2Distance(ballsPos[j], ballsPos[i]);
+              normal = Vector2Scale(normal, overlap / 2.f);
 
               ballsPos[i] = Vector2Subtract(ballsPos[i], normal);
               ballsPos[j] = Vector2Add(ballsPos[j], normal);
