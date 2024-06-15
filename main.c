@@ -1,7 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
 #include <stdlib.h>
-#include <time.h>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
@@ -19,7 +18,6 @@ int main(void) {
   Vector2 ballsAcc[BALL_NUM] = {gravity.x, gravity.y};
   Color ballsColor[BALL_NUM];
 
-  srand(time(NULL));
   for (int i = 0; i < BALL_NUM; i++) {
     ballsVel[i] = (Vector2){GetRandomValue(100, 200), GetRandomValue(10, 100)};
     ballsPos[i] =
@@ -94,7 +92,7 @@ int main(void) {
     }
 
     BeginDrawing();
-    ClearBackground(RAYWHITE);
+    ClearBackground(BLACK);
 
     for (int i = 0; i < BALL_NUM; i++) {
       DrawCircleV(ballsPos[i], (float)BALL_RADIUS, ballsColor[i]);
